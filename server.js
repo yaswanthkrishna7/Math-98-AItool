@@ -14,7 +14,7 @@ app.post("/api/ask", async (req, res) => {
   const { question, systemPrompt } = req.body;
   if (!question) return res.status(400).json({ error: "question is required" });
 
-  const apiKey = process.env.GROQ_API_KEY;
+  const apiKey = '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';
   if (!apiKey) {
     return res.status(500).json({ error: "GROQ_API_KEY not set. Please add it to your .env file." });
   }
