@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>MathPal — Learn Math the Fun Way!</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#e8f4ff;--yellow:#FFD93D;--coral:#FF6B6B;--mint:#6BCB77;--purple:#845EC2;
+  --blue:#4D96FF;--orange:#FF9A3C;--pink:#FF6FC8;--white:#FFFDF7;
+  --text:#2D2D2D;--muted:#7a7a8a;
+  --card:#ffffff;--radius:20px;--shadow:0 8px 32px rgba(0,0,0,0.10);
+}
+html{scroll-behavior:smooth}
+body{
+  background:var(--sky);
+  font-family:'Nunito',sans-serif;
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* Floating stars background */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    radial-gradient(circle at 15% 20%,rgba(255,217,61,0.18) 0%,transparent 50%),
+    radial-gradient(circle at 85% 80%,rgba(107,203,119,0.15) 0%,transparent 50%),
+    radial-gradient(circle at 50% 50%,rgba(77,150,255,0.10) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+
+/* HEADER */
+header{
+  position:relative;z-index:10;
+  background:linear-gradient(135deg,#845EC2 0%,#4D96FF 50%,#6BCB77 100%);
+  padding:0 24px;
+  box-shadow:0 4px 20px rgba(132,94,194,0.3);
+}
+.header-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 0;gap:16px;flex-wrap:wrap;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;}
+.logo-icon{
+  width:52px;height:52px;border-radius:16px;
+  background:var(--yellow);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;box-shadow:0 4px 12px rgba(0,0,0,0.2);
+  flex-shrink:0;
+}
+.logo-text{font-family:'Fredoka One',cursive;font-size:28px;color:#fff;letter-spacing:1px;line-height:1;}
+.logo-sub{font-size:12px;color:rgba(255,255,255,0.8);font-weight:600;letter-spacing:0.5px;}
+.header-stars{display:flex;gap:6px;align-items:center;}
+.star-badge{
+  background:rgba(255,255,255,0.2);border-radius:20px;
+  padding:6px 14px;color:#fff;font-weight:700;font-size:14px;
+  display:flex;align-items:center;gap:6px;
+}
+
+/* GRADE SELECTOR */
+.grade-bar{
+  position:relative;z-index:9;
+  background:#fff;
+  border-bottom:3px solid rgba(132,94,194,0.12);
+  padding:0 24px;
+  overflow-x:auto;
+}
+.grade-inner{
+  max-width:1100px;margin:0 auto;
+  display:flex;gap:4px;padding:10px 0;
+  white-space:nowrap;
+}
+.grade-btn{
+  padding:8px 18px;border-radius:30px;border:2px solid transparent;
+  font-family:'Nunito',sans-serif;font-weight:700;font-size:14px;
+  cursor:pointer;transition:all 0.2s;background:var(--sky);color:var(--muted);
+  flex-shrink:0;
+}
+.grade-btn:hover{transform:translateY(-2px);box-shadow:var(--shadow);}
+.grade-btn.active{color:#fff;border-color:transparent;transform:translateY(-2px);box-shadow:0 4px 14px rgba(0,0,0,0.15);}
+.grade-btn[data-g="K"].active{background:var(--coral);}
+.grade-btn[data-g="1"].active{background:var(--orange);}
+.grade-btn[data-g="2"].active{background:var(--yellow);color:var(--text);}
+.grade-btn[data-g="3"].active{background:var(--mint);}
+.grade-btn[data-g="4"].active{background:var(--blue);}
+.grade-btn[data-g="5"].active{background:var(--purple);}
+.grade-btn[data-g="6"].active{background:var(--pink);}
+.grade-btn[data-g="A1"].active{background:#2D2D2D;}
+
+/* MAIN LAYOUT */
+.app{
+  position:relative;z-index:1;
+  max-width:1100px;margin:0 auto;
+  padding:28px 24px;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:24px;
+  align-items:start;
+}
+
+/* TOPIC SIDEBAR */
+.sidebar{
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  overflow:hidden;
+  position:sticky;top:20px;
+}
+.sidebar-title{
+  padding:16px 18px 12px;
+  font-family:'Fredoka One',cursive;
+  font-size:17px;color:var(--purple);
+  border-bottom:2px dashed rgba(132,94,194,0.15);
+  display:flex;align-items:center;gap:8px;
+}
+.topic-list{max-height:75vh;overflow-y:auto;padding:8px;}
+.topic-list::-webkit-scrollbar{width:4px;}
+.topic-list::-webkit-scrollbar-track{background:transparent;}
+.topic-list::-webkit-scrollbar-thumb{background:rgba(132,94,194,0.3);border-radius:4px;}
+.topic-item{
+  padding:10px 12px;border-radius:12px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--muted);
+  transition:all 0.18s;display:flex;align-items:center;gap:10px;
+  border:2px solid transparent;margin-bottom:2px;
+}
+.topic-item:hover{background:var(--sky);color:var(--text);}
+.topic-item.active{background:linear-gradient(135deg,#f0e8ff,#e8f0ff);color:var(--purple);border-color:rgba(132,94,194,0.25);}
+.topic-icon{font-size:18px;flex-shrink:0;width:24px;text-align:center;}
+
+/* MAIN AREA */
+.main-area{display:flex;flex-direction:column;gap:20px;}
+
+/* QUESTION INPUT CARD */
+.ask-card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:22px 24px;
+}
+.ask-label{
+  font-family:'Fredoka One',cursive;font-size:20px;
+  color:var(--purple);margin-bottom:14px;
+  display:flex;align-items:center;gap:10px;
+}
+.ask-row{display:flex;gap:10px;align-items:flex-end;}
+.ask-input{
+  flex:1;padding:14px 18px;
+  border-radius:14px;border:2.5px solid rgba(132,94,194,0.25);
+  font-family:'Nunito',sans-serif;font-size:16px;font-weight:600;
+  outline:none;transition:border-color 0.2s;background:var(--sky);color:var(--text);
+  resize:none;min-height:52px;
+}
+.ask-input:focus{border-color:var(--purple);background:#fff;}
+.ask-btn{
+  padding:14px 24px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;font-family:'Fredoka One',cursive;font-size:18px;
+  cursor:pointer;transition:all 0.2s;white-space:nowrap;
+  box-shadow:0 4px 14px rgba(132,94,194,0.4);
+}
+.ask-btn:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(132,94,194,0.5);}
+.ask-btn:active{transform:translateY(0);}
+.ask-btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+
+/* QUICK TOPICS */
+.quick-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+.quick-chip{
+  padding:7px 14px;border-radius:20px;border:2px solid transparent;
+  font-size:13px;font-weight:700;cursor:pointer;transition:all 0.18s;
+  background:var(--sky);color:var(--muted);
+}
+.quick-chip:hover{transform:translateY(-2px);box-shadow:0 3px 10px rgba(0,0,0,0.1);}
+.qc-count{background:#fff3cd;border-color:#ffc107;color:#856404;}
+.qc-place{background:#d1ecf1;border-color:#17a2b8;color:#0c5460;}
+.qc-add{background:#d4edda;border-color:#28a745;color:#155724;}
+.qc-sub{background:#f8d7da;border-color:#dc3545;color:#721c24;}
+.qc-mult{background:#e2d9f3;border-color:#845EC2;color:#4a1d96;}
+.qc-frac{background:#fde8d8;border-color:#FF9A3C;color:#7c3c00;}
+.qc-geom{background:#d6eaf8;border-color:#4D96FF;color:#0d3b75;}
+.qc-alg{background:#f5d5e0;border-color:#FF6FC8;color:#7c1048;}
+
+/* ANSWER AREA */
+.answer-card{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;
+  animation:slideUp 0.4s ease;
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.answer-header{
+  background:linear-gradient(135deg,var(--purple) 0%,var(--blue) 100%);
+  padding:16px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.answer-header-left{display:flex;align-items:center;gap:12px;}
+.mascot{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--yellow);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+  box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  animation:bounce 1s ease infinite alternate;
+}
+@keyframes bounce{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+.answer-title{font-family:'Fredoka One',cursive;font-size:19px;color:#fff;}
+.answer-sub{font-size:12px;color:rgba(255,255,255,0.8);font-weight:600;}
+.answer-body{padding:24px;}
+
+/* Loading */
+.loading-wrap{
+  padding:48px;text-align:center;
+}
+.loading-dots{display:flex;gap:10px;justify-content:center;margin-bottom:16px;}
+.dot{
+  width:16px;height:16px;border-radius:50%;
+  animation:dotBounce 1.2s infinite ease-in-out;
+}
+.dot:nth-child(1){background:var(--coral);animation-delay:0s;}
+.dot:nth-child(2){background:var(--yellow);animation-delay:0.2s;}
+.dot:nth-child(3){background:var(--mint);animation-delay:0.4s;}
+@keyframes dotBounce{0%,80%,100%{transform:scale(0.6)}40%{transform:scale(1.2)}}
+.loading-text{font-family:'Fredoka One',cursive;font-size:20px;color:var(--purple);}
+
+/* AI Response Styles */
+.ai-response{font-size:16px;line-height:1.8;color:var(--text);}
+.ai-response h2{
+  font-family:'Fredoka One',cursive;font-size:22px;color:var(--purple);
+  margin:20px 0 10px;display:flex;align-items:center;gap:8px;
+}
+.ai-response h3{
+  font-family:'Fredoka One',cursive;font-size:18px;color:var(--blue);
+  margin:16px 0 8px;
+}
+.ai-response p{margin:8px 0;font-weight:600;}
+.ai-response strong{color:var(--purple);font-weight:800;}
+.ai-response em{color:var(--coral);font-style:normal;font-weight:700;}
+
+/* Visual blocks */
+.viz-box{
+  background:linear-gradient(135deg,#fafbff,#f0f4ff);
+  border:2.5px dashed rgba(132,94,194,0.25);
+  border-radius:16px;padding:20px;margin:16px 0;
+  text-align:center;
+}
+.viz-title{font-family:'Fredoka One',cursive;font-size:16px;color:var(--purple);margin-bottom:14px;}
+
+/* Number blocks */
+.blocks-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:10px 0;}
+.unit-block{
+  width:32px;height:32px;border-radius:6px;
+  background:var(--blue);border:2px solid rgba(0,0,0,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:800;color:#fff;
+  transition:transform 0.2s;cursor:default;
+}
+.unit-block:hover{transform:scale(1.2);}
+.ten-block{
+  width:32px;height:120px;border-radius:6px;
+  background:var(--orange);border:2px solid rgba(0,0,0,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;writing-mode:vertical-rl;
+  text-orientation:mixed;letter-spacing:2px;
+}
+.hundred-block{
+  width:120px;height:120px;border-radius:10px;
+  background:var(--coral);border:2px solid rgba(0,0,0,0.12);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;color:#fff;
+}
+
+/* Number line */
+.number-line-wrap{overflow-x:auto;padding:10px 0;}
+.number-line{
+  display:flex;align-items:flex-end;gap:0;
+  min-width:max-content;margin:0 auto;padding:0 20px;
+}
+.nl-item{display:flex;flex-direction:column;align-items:center;gap:4px;}
+.nl-tick{width:2px;height:16px;background:var(--text);}
+.nl-tick.big{height:24px;background:var(--purple);}
+.nl-bar{height:3px;background:var(--text);flex:1;}
+.nl-num{font-size:13px;font-weight:800;color:var(--text);}
+.nl-dot{
+  width:24px;height:24px;border-radius:50%;
+  background:var(--coral);border:3px solid #fff;
+  box-shadow:0 2px 8px rgba(0,0,0,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;
+}
+.nl-highlight{background:var(--yellow);color:var(--text);}
+
+/* Place value chart */
+.pv-table{border-collapse:collapse;width:100%;margin:10px 0;}
+.pv-table th,.pv-table td{
+  border:2.5px solid rgba(132,94,194,0.2);
+  padding:10px 16px;text-align:center;
+  font-weight:700;font-size:16px;
+}
+.pv-table th{
+  background:linear-gradient(135deg,var(--purple),var(--blue));
+  color:#fff;font-family:'Fredoka One',cursive;font-size:15px;
+}
+.pv-table td{background:#fff;font-size:22px;color:var(--purple);}
+.pv-hundreds{background:#fde8d8 !important;color:var(--coral) !important;}
+.pv-tens{background:#d4edda !important;color:var(--mint) !important;}
+.pv-ones{background:#d1ecf1 !important;color:var(--blue) !important;}
+
+/* Steps */
+.steps-wrap{margin:14px 0;}
+.step-item{
+  display:flex;gap:14px;align-items:flex-start;
+  padding:12px 16px;border-radius:14px;
+  background:var(--sky);margin-bottom:8px;
+  border-left:4px solid var(--purple);
+  transition:transform 0.2s;
+}
+.step-item:hover{transform:translateX(4px);}
+.step-num{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  background:var(--purple);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Fredoka One',cursive;font-size:15px;
+}
+.step-text{font-weight:600;font-size:15px;padding-top:4px;}
+
+/* Fun fact box */
+.fun-fact{
+  background:linear-gradient(135deg,#fff9e6,#fff3cd);
+  border:2.5px solid var(--yellow);border-radius:14px;
+  padding:14px 18px;margin:14px 0;
+  display:flex;gap:12px;align-items:flex-start;
+}
+.fun-fact-icon{font-size:26px;flex-shrink:0;}
+.fun-fact-text{font-weight:700;font-size:15px;color:#856404;}
+
+/* Try it box */
+.try-it{
+  background:linear-gradient(135deg,#e8f5e9,#c8e6c9);
+  border:2.5px solid var(--mint);border-radius:14px;
+  padding:16px 20px;margin:14px 0;
+}
+.try-title{font-family:'Fredoka One',cursive;font-size:17px;color:#155724;margin-bottom:8px;}
+.try-problem{font-size:28px;font-weight:800;color:var(--text);text-align:center;padding:10px;}
+.try-input-row{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:8px;}
+.try-input{
+  width:80px;padding:10px;border-radius:10px;
+  border:2.5px solid var(--mint);font-size:22px;font-weight:800;
+  text-align:center;outline:none;font-family:'Nunito',sans-serif;
+}
+.try-check{
+  padding:10px 20px;border-radius:10px;border:none;
+  background:var(--mint);color:#fff;font-family:'Fredoka One',cursive;
+  font-size:16px;cursor:pointer;transition:all 0.2s;
+}
+.try-check:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(107,203,119,0.4);}
+.try-result{text-align:center;font-family:'Fredoka One',cursive;font-size:20px;margin-top:8px;min-height:30px;}
+
+/* Emoji counter */
+.emoji-counter{
+  display:flex;flex-wrap:wrap;gap:4px;
+  justify-content:center;margin:10px 0;
+  font-size:28px;line-height:1.3;
+}
+
+/* Comparison viz */
+.compare-row{display:flex;gap:20px;justify-content:center;align-items:center;margin:10px 0;flex-wrap:wrap;}
+.compare-box{
+  background:#fff;border-radius:14px;padding:16px 24px;
+  border:3px solid rgba(132,94,194,0.2);text-align:center;
+  min-width:100px;
+}
+.compare-num{font-family:'Fredoka One',cursive;font-size:42px;}
+.compare-label{font-size:13px;font-weight:700;color:var(--muted);}
+.compare-sym{font-family:'Fredoka One',cursive;font-size:48px;color:var(--coral);}
+
+/* Addition/subtraction visual */
+.op-viz{
+  display:flex;align-items:center;gap:12px;
+  justify-content:center;flex-wrap:wrap;margin:12px 0;
+}
+.op-group{text-align:center;}
+.op-group-label{font-size:12px;font-weight:800;color:var(--muted);margin-bottom:4px;}
+.op-sym{font-family:'Fredoka One',cursive;font-size:36px;color:var(--coral);align-self:center;}
+.op-num{font-family:'Fredoka One',cursive;font-size:48px;color:var(--purple);}
+.op-result{
+  font-family:'Fredoka One',cursive;font-size:48px;color:var(--mint);
+  padding:8px 20px;background:linear-gradient(135deg,#d4edda,#b8dfbc);
+  border-radius:14px;border:3px solid var(--mint);
+}
+
+/* Progress bar */
+.progress-wrap{margin:10px 0;}
+.progress-label{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px;}
+.progress-bar{
+  height:18px;border-radius:20px;background:#e9ecef;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;border-radius:20px;
+  background:linear-gradient(90deg,var(--purple),var(--blue));
+  transition:width 1s ease;
+  display:flex;align-items:center;justify-content:flex-end;padding-right:8px;
+  font-size:11px;font-weight:800;color:#fff;
+}
+
+/* Welcome screen */
+.welcome{
+  background:var(--card);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:40px;text-align:center;
+}
+.welcome-emoji{font-size:72px;margin-bottom:16px;display:block;animation:bounce 1s ease infinite alternate;}
+.welcome-title{font-family:'Fredoka One',cursive;font-size:32px;color:var(--purple);margin-bottom:10px;}
+.welcome-sub{font-size:17px;color:var(--muted);font-weight:600;max-width:400px;margin:0 auto 24px;}
+.welcome-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-top:24px;}
+.welcome-card{
+  padding:18px;border-radius:16px;cursor:pointer;
+  transition:all 0.2s;border:2.5px solid transparent;
+  background:var(--sky);
+}
+.welcome-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.welcome-card-icon{font-size:36px;margin-bottom:8px;}
+.welcome-card-title{font-family:'Fredoka One',cursive;font-size:16px;color:var(--purple);}
+.welcome-card-sub{font-size:12px;color:var(--muted);font-weight:600;margin-top:4px;}
+
+/* Spinner */
+@keyframes spin{to{transform:rotate(360deg)}}
+.spinner{display:inline-block;width:20px;height:20px;border:3px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.7s linear infinite;}
+
+/* Responsive */
+@media(max-width:700px){
+  .app{grid-template-columns:1fr;}
+  .sidebar{position:static;}
+  .topic-list{max-height:180px;}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#">
+      <div class="logo-icon">🧮</div>
+      <div>
+        <div class="logo-text">MathPal</div>
+        <div class="logo-sub">Learn • Explore • Master</div>
+      </div>
+    </a>
+    <div class="header-stars">
+      <div class="star-badge">⭐ <span id="star-count">0</span> Stars</div>
+      <div class="star-badge">🔥 <span id="streak-count">1</span> Day Streak</div>
+    </div>
+  </div>
+</header>
+
+<!-- GRADE BAR -->
+<div class="grade-bar">
+  <div class="grade-inner">
+    <button class="grade-btn active" data-g="K" onclick="selectGrade('K',this)">🌱 Kindergarten</button>
+    <button class="grade-btn" data-g="1" onclick="selectGrade('1',this)">🌟 Grade 1</button>
+    <button class="grade-btn" data-g="2" onclick="selectGrade('2',this)">🚀 Grade 2</button>
+    <button class="grade-btn" data-g="3" onclick="selectGrade('3',this)">🎯 Grade 3</button>
+    <button class="grade-btn" data-g="4" onclick="selectGrade('4',this)">💡 Grade 4</button>
+    <button class="grade-btn" data-g="5" onclick="selectGrade('5',this)">🔬 Grade 5</button>
+    <button class="grade-btn" data-g="6" onclick="selectGrade('6',this)">📐 Grade 6</button>
+    <button class="grade-btn" data-g="A1" onclick="selectGrade('A1',this)">🧠 Algebra 1</button>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-title">📚 Topics</div>
+    <div class="topic-list" id="topic-list"></div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main-area">
+
+    <!-- ASK CARD -->
+    <div class="ask-card">
+      <div class="ask-label">🤔 Ask MathPal anything!</div>
+      <div class="ask-row">
+        <textarea class="ask-input" id="ask-input" rows="2"
+          placeholder="Type your math question here... e.g. 'What is place value?' or 'Help me with 24 + 15'"></textarea>
+        <button class="ask-btn" id="ask-btn" onclick="askQuestion()">
+          <span id="btn-content">Ask! 🚀</span>
+        </button>
+      </div>
+      <div class="quick-row">
+        <span class="quick-chip qc-count" onclick="quickAsk('How do I count from 1 to 20?')">🔢 Counting</span>
+        <span class="quick-chip qc-place" onclick="quickAsk('Explain place value with hundreds, tens, and ones using visual blocks')">🏛️ Place Value</span>
+        <span class="quick-chip qc-add" onclick="quickAsk('How do I add two numbers? Show me with visual blocks and a number line')">➕ Addition</span>
+        <span class="quick-chip qc-sub" onclick="quickAsk('How does subtraction work? Show me step by step with visuals')">➖ Subtraction</span>
+        <span class="quick-chip qc-mult" onclick="quickAsk('Explain multiplication with fun visuals and examples')">✖️ Multiply</span>
+        <span class="quick-chip qc-frac" onclick="quickAsk('What are fractions? Show me with pictures')">🍕 Fractions</span>
+        <span class="quick-chip qc-geom" onclick="quickAsk('Explain basic geometry shapes with examples')">📐 Geometry</span>
+        <span class="quick-chip qc-alg" onclick="quickAsk('What is a variable in algebra? Give simple examples')">🔤 Algebra</span>
+      </div>
+    </div>
+
+    <!-- ANSWER AREA -->
+    <div id="answer-area">
+      <div class="welcome">
+        <span class="welcome-emoji">🎉</span>
+        <div class="welcome-title">Welcome to MathPal!</div>
+        <div class="welcome-sub">Your friendly AI math tutor. Pick a topic, ask a question, and learn with fun visuals!</div>
+        <div class="welcome-grid">
+          <div class="welcome-card" onclick="quickAsk('How do I count from 1 to 20 with fun examples?')">
+            <div class="welcome-card-icon">🔢</div>
+            <div class="welcome-card-title">Counting</div>
+            <div class="welcome-card-sub">Numbers 1–20</div>
+          </div>
+          <div class="welcome-card" onclick="quickAsk('Show me place value with hundreds tens and ones')">
+            <div class="welcome-card-icon">🏛️</div>
+            <div class="welcome-card-title">Place Value</div>
+            <div class="welcome-card-sub">Hundreds, Tens, Ones</div>
+          </div>
+          <div class="welcome-card" onclick="quickAsk('Teach me addition with visual blocks')">
+            <div class="welcome-card-icon">➕</div>
+            <div class="welcome-card-title">Addition</div>
+            <div class="welcome-card-sub">Adding numbers</div>
+          </div>
+          <div class="welcome-card" onclick="quickAsk('Teach me subtraction step by step')">
+            <div class="welcome-card-icon">➖</div>
+            <div class="welcome-card-title">Subtraction</div>
+            <div class="welcome-card-sub">Taking away</div>
+          </div>
+          <div class="welcome-card" onclick="quickAsk('How do I compare two numbers? Show me with examples')">
+            <div class="welcome-card-icon">⚖️</div>
+            <div class="welcome-card-title">Comparing</div>
+            <div class="welcome-card-sub">Greater, Less, Equal</div>
+          </div>
+          <div class="welcome-card" onclick="quickAsk('What are fractions? Show me with pizza examples')">
+            <div class="welcome-card-icon">🍕</div>
+            <div class="welcome-card-title">Fractions</div>
+            <div class="welcome-card-sub">Parts of a whole</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ── Grade & Topic Data ─────────────────────────────────────────────────────
+const GRADES = {
+  K: {
+    label:'Kindergarten', color:'var(--coral)',
+    topics:[
+      {icon:'🔢',label:'Counting 1–10'},
+      {icon:'🔢',label:'Counting 1–20'},
+      {icon:'✍️',label:'Reading & Writing Numbers'},
+      {icon:'🔵',label:'More, Fewer, Same'},
+      {icon:'📏',label:'Comparing Objects'},
+      {icon:'🔷',label:'Basic Shapes'},
+      {icon:'📅',label:'Patterns'},
+    ]
+  },
+  1:{
+    label:'Grade 1', color:'var(--orange)',
+    topics:[
+      {icon:'🏛️',label:'Place Value (Tens & Ones)'},
+      {icon:'📦',label:'Blocks Under 100'},
+      {icon:'🔄',label:'Expanded Form'},
+      {icon:'⚖️',label:'Compare Two-Digit Numbers'},
+      {icon:'➕',label:'Add 0 to Numbers'},
+      {icon:'➕',label:'Add Numbers 1–5'},
+      {icon:'➕',label:'Add Numbers 6–10'},
+      {icon:'➕',label:'Add Two-Digit + One-Digit'},
+      {icon:'➖',label:'Subtract 1–5'},
+      {icon:'➖',label:'Subtract 6–10'},
+      {icon:'🪜',label:'Up the Ladder Method'},
+      {icon:'📖',label:'Word Problems (Add/Sub)'},
+      {icon:'📏',label:'Measuring Length'},
+      {icon:'⏰',label:'Telling Time'},
+    ]
+  },
+  2:{
+    label:'Grade 2', color:'var(--yellow)',
+    topics:[
+      {icon:'🏛️',label:'Place Value (Hundreds)'},
+      {icon:'➕',label:'Add 2-Digit Numbers'},
+      {icon:'➕',label:'Add with Regrouping'},
+      {icon:'➖',label:'Subtract 2-Digit Numbers'},
+      {icon:'➖',label:'Subtract with Regrouping'},
+      {icon:'📏',label:'Measure in Inches & cm'},
+      {icon:'📊',label:'Bar Graphs & Pictographs'},
+      {icon:'⏰',label:'Time to 5 Minutes'},
+      {icon:'💰',label:'Money & Coins'},
+      {icon:'🔷',label:'2D & 3D Shapes'},
+    ]
+  },
+  3:{
+    label:'Grade 3', color:'var(--mint)',
+    topics:[
+      {icon:'✖️',label:'Multiplication Intro'},
+      {icon:'✖️',label:'Multiplication Tables (2–10)'},
+      {icon:'➗',label:'Division Intro'},
+      {icon:'➗',label:'Division Facts'},
+      {icon:'🍕',label:'Fractions (½, ⅓, ¼)'},
+      {icon:'📏',label:'Perimeter'},
+      {icon:'⬛',label:'Area Intro'},
+      {icon:'📊',label:'Bar Graphs & Line Plots'},
+      {icon:'🕐',label:'Time & Elapsed Time'},
+    ]
+  },
+  4:{
+    label:'Grade 4', color:'var(--blue)',
+    topics:[
+      {icon:'🔢',label:'Multi-Digit Multiplication'},
+      {icon:'➗',label:'Long Division'},
+      {icon:'🍕',label:'Equivalent Fractions'},
+      {icon:'🍕',label:'Add & Subtract Fractions'},
+      {icon:'💯',label:'Decimals (Tenths, Hundredths)'},
+      {icon:'📐',label:'Angles & Lines'},
+      {icon:'⬛',label:'Area & Perimeter'},
+      {icon:'📊',label:'Data & Graphs'},
+    ]
+  },
+  5:{
+    label:'Grade 5', color:'var(--purple)',
+    topics:[
+      {icon:'✖️',label:'Multiply Fractions'},
+      {icon:'➗',label:'Divide Fractions'},
+      {icon:'💯',label:'Decimal Operations'},
+      {icon:'📦',label:'Volume of Rectangular Prisms'},
+      {icon:'📍',label:'Coordinate Plane'},
+      {icon:'➗',label:'Order of Operations'},
+      {icon:'🔢',label:'Factors & Multiples'},
+    ]
+  },
+  6:{
+    label:'Grade 6', color:'var(--pink)',
+    topics:[
+      {icon:'🔢',label:'Ratios & Proportions'},
+      {icon:'💯',label:'Percent'},
+      {icon:'➖',label:'Negative Numbers'},
+      {icon:'🔤',label:'Expressions & Variables'},
+      {icon:'=',label:'One-Step Equations'},
+      {icon:'📐',label:'Area of Triangles & Polygons'},
+      {icon:'📦',label:'Surface Area & Volume'},
+      {icon:'📊',label:'Statistics: Mean, Median, Mode'},
+    ]
+  },
+  A1:{
+    label:'Algebra 1', color:'#2D2D2D',
+    topics:[
+      {icon:'🔤',label:'Variables & Expressions'},
+      {icon:'=',label:'Solving Equations'},
+      {icon:'⚡',label:'Inequalities'},
+      {icon:'📈',label:'Linear Functions'},
+      {icon:'📉',label:'Slope & Y-Intercept'},
+      {icon:'🔲',label:'Systems of Equations'},
+      {icon:'⬛',label:'Exponents & Powers'},
+      {icon:'📦',label:'Polynomials'},
+      {icon:'🔍',label:'Factoring'},
+      {icon:'√',label:'Square Roots'},
+      {icon:'📐',label:'Quadratic Equations'},
+    ]
+  }
+};
+
+let currentGrade = 'K';
+let stars = 0;
+
+function selectGrade(g, el) {
+  currentGrade = g;
+  document.querySelectorAll('.grade-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderTopics(g);
+}
+
+function renderTopics(g) {
+  const topics = GRADES[g].topics;
+  const list = document.getElementById('topic-list');
+  list.innerHTML = topics.map((t,i) =>
+    `<div class="topic-item" onclick="topicClick('${t.label.replace(/'/g,"\\'")}')">
+      <span class="topic-icon">${t.icon}</span>
+      <span>${t.label}</span>
+    </div>`
+  ).join('');
+}
+
+function topicClick(label) {
+  document.querySelectorAll('.topic-item').forEach(t => t.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  quickAsk(`Explain "${label}" for a Grade ${currentGrade} student. Use simple language, fun examples, visual diagrams with emoji, step-by-step explanation, and include a practice problem at the end.`);
+}
+
+function quickAsk(q) {
+  document.getElementById('ask-input').value = q;
+  askQuestion();
+}
+
+// ── AI Question ─────────────────────────────────────────────────────────────
+async function askQuestion() {
+  const input = document.getElementById('ask-input');
+  const q = input.value.trim();
+  if (!q) return;
+
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true;
+  document.getElementById('btn-content').innerHTML = '<span class="spinner"></span>';
+
+  showLoading();
+
+  const grade = GRADES[currentGrade];
+  const systemPrompt = `You are MathPal, a super friendly and enthusiastic AI math tutor for kids in ${grade.label}. Your job is to explain math concepts in the most fun, clear, and visual way possible.
+
+IMPORTANT FORMATTING RULES — You MUST follow these exactly:
+
+1. Start with a big warm greeting using the child's grade and a fun emoji
+2. Use [VISUAL:type:data] tags to create visual diagrams (explained below)
+3. Break explanations into clear steps using [STEP:number:text] tags
+4. Add a [FUN_FACT:text] somewhere 
+5. End with a [TRY_IT:problem:answer] practice problem
+6. Use simple words a child can understand
+7. Be enthusiastic! Use emojis throughout
+
+VISUAL TAGS (use these to create diagrams):
+- [VISUAL:blocks:number] — shows number as colorful counting blocks (use for numbers 1-20)
+- [VISUAL:place_value:number] — shows place value chart for the number
+- [VISUAL:number_line:start,end,highlight] — draws a number line highlighting a number
+- [VISUAL:compare:num1,sym,num2] — comparison visual (sym = > < or =)
+- [VISUAL:addition:num1,num2] — addition with emoji blocks
+- [VISUAL:subtraction:num1,num2] — subtraction visual
+- [VISUAL:emoji_count:emoji,count] — rows of emoji for counting (e.g. emoji_count:🍎,8)
+- [VISUAL:fraction:numerator,denominator] — fraction visual
+
+STEP TAGS:
+- [STEP:1:First step text here]
+- [STEP:2:Second step text here]
+etc.
+
+[FUN_FACT:Interesting math fact here]
+[TRY_IT:Write a problem like "5 + 3 = ?":8]
+
+Keep explanations age-appropriate for ${grade.label}. Make it genuinely educational and fun!`;
+
+  try {
+    const res = await fetch('/api/ask', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q, systemPrompt: systemPrompt })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Server error');
+    const text = data.answer || 'Oops! Something went wrong. Please try again!';
+    renderAnswer(q, text);
+    addStar();
+  } catch(e) {
+    renderError(e.message);
+  }
+
+  btn.disabled = false;
+  document.getElementById('btn-content').innerHTML = 'Ask! 🚀';
+}
+
+function addStar() {
+  stars++;
+  document.getElementById('star-count').textContent = stars;
+}
+
+// ── Loading ──────────────────────────────────────────────────────────────────
+function showLoading() {
+  document.getElementById('answer-area').innerHTML = `
+    <div class="answer-card">
+      <div class="answer-header">
+        <div class="answer-header-left">
+          <div class="mascot">🤖</div>
+          <div><div class="answer-title">MathPal is thinking...</div><div class="answer-sub">Getting your answer ready!</div></div>
+        </div>
+      </div>
+      <div class="loading-wrap">
+        <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+        <div class="loading-text">Preparing your visual explanation... ✨</div>
+      </div>
+    </div>`;
+}
+
+function renderError(msg) {
+  const detail = msg || 'Please check your API connection and try again.';
+  document.getElementById('answer-area').innerHTML = `
+    <div class="answer-card">
+      <div class="answer-header">
+        <div class="answer-header-left"><div class="mascot">😅</div><div><div class="answer-title">Oops!</div></div></div>
+      </div>
+      <div style="padding:24px;text-align:center;">
+        <div style="font-size:48px;margin-bottom:12px;">😕</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:20px;color:var(--coral);">Something went wrong!</div>
+        <div style="font-size:15px;color:var(--muted);margin-top:8px;">${detail}</div>
+        <div style="font-size:13px;color:var(--muted);margin-top:6px;">Make sure your server is running and ANTHROPIC_API_KEY is set.</div>
+      </div>
+    </div>`;
+}
+
+// ── Render Answer ────────────────────────────────────────────────────────────
+function renderAnswer(question, text) {
+  const html = parseResponse(text);
+  document.getElementById('answer-area').innerHTML = `
+    <div class="answer-card">
+      <div class="answer-header">
+        <div class="answer-header-left">
+          <div class="mascot">🦉</div>
+          <div>
+            <div class="answer-title">MathPal's Explanation</div>
+            <div class="answer-sub">${escapeHtml(question.slice(0,60))}${question.length>60?'...':''}</div>
+          </div>
+        </div>
+      </div>
+      <div class="answer-body"><div class="ai-response">${html}</div></div>
+    </div>`;
+
+  // Init try-it
+  const tryBtn = document.getElementById('try-check-btn');
+  if (tryBtn) {
+    tryBtn.onclick = checkTryIt;
+  }
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Parse AI Response ────────────────────────────────────────────────────────
+function parseResponse(text) {
+  let html = text;
+
+  // VISUAL tags
+  html = html.replace(/\[VISUAL:blocks:(\d+)\]/g, (_, n) => renderBlocks(parseInt(n)));
+  html = html.replace(/\[VISUAL:place_value:(\d+)\]/g, (_, n) => renderPlaceValue(parseInt(n)));
+  html = html.replace(/\[VISUAL:number_line:([^,]+),([^,]+),([^\]]+)\]/g, (_, s, e, h) => renderNumberLine(parseInt(s), parseInt(e), parseInt(h)));
+  html = html.replace(/\[VISUAL:compare:([^,\]]+),([^,\]]+),([^\]]+)\]/g, (_, a, sym, b) => renderCompare(a.trim(), sym.trim(), b.trim()));
+  html = html.replace(/\[VISUAL:addition:([^,]+),([^\]]+)\]/g, (_, a, b) => renderAddition(parseInt(a), parseInt(b)));
+  html = html.replace(/\[VISUAL:subtraction:([^,]+),([^\]]+)\]/g, (_, a, b) => renderSubtraction(parseInt(a), parseInt(b)));
+  html = html.replace(/\[VISUAL:emoji_count:([^,]+),(\d+)\]/g, (_, em, n) => renderEmojiCount(em.trim(), parseInt(n)));
+  html = html.replace(/\[VISUAL:fraction:(\d+),(\d+)\]/g, (_, num, den) => renderFraction(parseInt(num), parseInt(den)));
+
+  // STEP tags
+  html = html.replace(/\[STEP:(\d+):([^\]]+)\]/g, (_, num, txt) =>
+    `<div class="step-item"><div class="step-num">${num}</div><div class="step-text">${txt}</div></div>`);
+
+  // FUN_FACT tag
+  html = html.replace(/\[FUN_FACT:([^\]]+)\]/g, (_, txt) =>
+    `<div class="fun-fact"><div class="fun-fact-icon">💡</div><div class="fun-fact-text">${txt}</div></div>`);
+
+  // TRY_IT tag
+  html = html.replace(/\[TRY_IT:([^:]+):([^\]]+)\]/g, (_, problem, answer) =>
+    renderTryIt(problem.trim(), answer.trim()));
+
+  // Bold/italic
+  html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+
+  // Headers
+  html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
+  html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
+  html = html.replace(/^# (.+)$/gm, '<h2>$1</h2>');
+
+  // Paragraphs
+  html = html.replace(/\n\n+/g, '</p><p>');
+  html = '<p>' + html + '</p>';
+  html = html.replace(/<p>\s*<\/p>/g, '');
+  html = html.replace(/<p>(<div|<h[23])/g, '$1');
+  html = html.replace(/(<\/div>|<\/h[23]>)<\/p>/g, '$1');
+
+  return html;
+}
+
+// ── Visual Renderers ─────────────────────────────────────────────────────────
+
+function renderBlocks(n) {
+  const colors = ['#FF6B6B','#FF9A3C','#FFD93D','#6BCB77','#4D96FF','#845EC2','#FF6FC8'];
+  const blocks = Array.from({length:Math.min(n,30)}, (_,i) =>
+    `<div class="unit-block" style="background:${colors[i%colors.length]}">${i+1}</div>`
+  ).join('');
+  return `<div class="viz-box">
+    <div class="viz-title">🔢 Counting to ${n}</div>
+    <div class="blocks-row">${blocks}</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:22px;color:var(--purple);margin-top:10px;">Total: ${n}</div>
+  </div>`;
+}
+
+function renderPlaceValue(n) {
+  const hundreds = Math.floor(n / 100);
+  const tens = Math.floor((n % 100) / 10);
+  const ones = n % 10;
+  let hRow = hundreds > 0 ? `<td class="pv-hundreds">${hundreds}</td>` : (n >= 100 ? `<td class="pv-hundreds">0</td>` : '');
+  let hHead = hundreds > 0 || n >= 100 ? `<th>Hundreds 💯</th>` : '';
+  return `<div class="viz-box">
+    <div class="viz-title">🏛️ Place Value of ${n}</div>
+    <table class="pv-table"><thead><tr>${hHead}<th>Tens 🔟</th><th>Ones 1️⃣</th></tr></thead>
+    <tbody><tr>${hRow}<td class="pv-tens">${tens}</td><td class="pv-ones">${ones}</td></tr></tbody></table>
+    <div style="margin-top:12px;font-family:'Fredoka One',cursive;font-size:18px;color:var(--text);">
+      ${hundreds>0?`<span style="color:var(--coral)">${hundreds} × 100</span> + `:''}
+      <span style="color:var(--mint)">${tens} × 10</span> + 
+      <span style="color:var(--blue)">${ones} × 1</span> = 
+      <span style="color:var(--purple)">${n}</span>
+    </div>
+  </div>`;
+}
+
+function renderNumberLine(start, end, highlight) {
+  const items = [];
+  for (let i = start; i <= Math.min(end, start+20); i++) {
+    const isHL = i === highlight;
+    items.push(`<div class="nl-item">
+      ${isHL ? `<div class="nl-dot nl-highlight">${i}</div>` : `<div class="nl-tick${i%5===0?' big':''}"></div>`}
+      ${!isHL ? `<div class="nl-num">${i}</div>` : ''}
+    </div>`);
+  }
+  return `<div class="viz-box">
+    <div class="viz-title">📏 Number Line${highlight?' — Find '+highlight:''}</div>
+    <div class="number-line-wrap">
+      <div class="number-line">${items.join('<div style="width:28px;height:3px;background:var(--text);align-self:center;margin-bottom:${0}px"></div>')}</div>
+    </div>
+  </div>`;
+}
+
+function renderCompare(a, sym, b) {
+  const symLabel = sym === '>' ? 'is greater than' : sym === '<' ? 'is less than' : 'is equal to';
+  const symColor = sym === '>' ? 'var(--coral)' : sym === '<' ? 'var(--blue)' : 'var(--mint)';
+  return `<div class="viz-box">
+    <div class="viz-title">⚖️ Comparing Numbers</div>
+    <div class="compare-row">
+      <div class="compare-box"><div class="compare-num" style="color:var(--purple)">${a}</div><div class="compare-label">First Number</div></div>
+      <div class="compare-sym" style="color:${symColor}">${sym}</div>
+      <div class="compare-box"><div class="compare-num" style="color:var(--blue)">${b}</div><div class="compare-label">Second Number</div></div>
+    </div>
+    <div style="font-family:'Fredoka One',cursive;font-size:18px;color:${symColor};margin-top:10px;">${a} ${symLabel} ${b}!</div>
+  </div>`;
+}
+
+function renderAddition(a, b) {
+  const result = a + b;
+  const emojiA = '🔵'.repeat(Math.min(a,15));
+  const emojiB = '🟡'.repeat(Math.min(b,15));
+  return `<div class="viz-box">
+    <div class="viz-title">➕ Adding ${a} + ${b}</div>
+    <div class="op-viz">
+      <div class="op-group"><div class="op-group-label">${a} blocks</div><div class="emoji-counter">${emojiA}</div><div class="op-num">${a}</div></div>
+      <div class="op-sym">+</div>
+      <div class="op-group"><div class="op-group-label">${b} blocks</div><div class="emoji-counter">${emojiB}</div><div class="op-num">${b}</div></div>
+      <div class="op-sym" style="color:var(--mint)">=</div>
+      <div class="op-result">${result}</div>
+    </div>
+    <div style="margin-top:10px;font-family:'Fredoka One',cursive;font-size:18px;color:var(--purple);">${a} + ${b} = ${result} 🎉</div>
+  </div>`;
+}
+
+function renderSubtraction(a, b) {
+  const result = a - b;
+  const emojis = Array.from({length:Math.min(a,15)}, (_,i) =>
+    `<span style="${i >= (a-b) ? 'opacity:0.2;text-decoration:line-through' : ''}" >🔵</span>`
+  ).join('');
+  return `<div class="viz-box">
+    <div class="viz-title">➖ Subtracting ${a} − ${b}</div>
+    <div class="emoji-counter">${emojis}</div>
+    <div class="op-viz" style="margin-top:10px;">
+      <div class="op-num">${a}</div>
+      <div class="op-sym">−</div>
+      <div class="op-num">${b}</div>
+      <div class="op-sym" style="color:var(--mint)">=</div>
+      <div class="op-result">${result}</div>
+    </div>
+  </div>`;
+}
+
+function renderEmojiCount(emoji, n) {
+  const items = Array(Math.min(n,30)).fill(emoji).join(' ');
+  return `<div class="viz-box">
+    <div class="viz-title">Count the ${emoji}'s — How many?</div>
+    <div class="emoji-counter">${items}</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:28px;color:var(--purple);margin-top:8px;">= ${n} ${emoji}'s!</div>
+  </div>`;
+}
+
+function renderFraction(num, den) {
+  const pct = Math.round((num/den)*100);
+  const slices = Array.from({length:den}, (_,i) =>
+    `<div style="flex:1;height:40px;background:${i<num?'var(--coral)':'#e9ecef'};border:2px solid #fff;${i===0?'border-radius:8px 0 0 8px':''}${i===den-1?'border-radius:0 8px 8px 0':''}"></div>`
+  ).join('');
+  return `<div class="viz-box">
+    <div class="viz-title">🍕 Fraction: ${num}/${den}</div>
+    <div style="display:flex;margin:10px auto;max-width:300px;">${slices}</div>
+    <div style="font-family:'Fredoka One',cursive;font-size:24px;color:var(--purple);margin-top:8px;">
+      <span style="color:var(--coral)">${num}</span> out of <span style="color:var(--blue)">${den}</span> parts = <span style="color:var(--mint)">${pct}%</span>
+    </div>
+  </div>`;
+}
+
+function renderTryIt(problem, answer) {
+  return `<div class="try-it">
+    <div class="try-title">🎯 Your Turn! Try This Problem:</div>
+    <div class="try-problem">${problem}</div>
+    <div class="try-input-row">
+      <input class="try-input" id="try-answer-input" type="text" placeholder="?" />
+      <button class="try-check" id="try-check-btn" data-answer="${escapeHtml(answer)}">Check ✓</button>
+    </div>
+    <div id="try-result" class="try-result"></div>
+  </div>`;
+}
+
+function checkTryIt() {
+  const btn = document.getElementById('try-check-btn');
+  const input = document.getElementById('try-answer-input');
+  const result = document.getElementById('try-result');
+  const correct = btn.dataset.answer.trim();
+  const given = input.value.trim();
+  if (!given) return;
+  if (given.toLowerCase() === correct.toLowerCase() ||
+      parseFloat(given) === parseFloat(correct)) {
+    result.innerHTML = '🎉 Correct! Amazing job! ⭐';
+    result.style.color = 'var(--mint)';
+    addStar();
+  } else {
+    result.innerHTML = `😅 Not quite! The answer is <strong>${correct}</strong>. Try again! 💪`;
+    result.style.color = 'var(--coral)';
+  }
+}
+
+// Enter key submit
+document.getElementById('ask-input').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); askQuestion(); }
+});
+
+// Init
+renderTopics('K');
+</script>
+</body>
+</html>
